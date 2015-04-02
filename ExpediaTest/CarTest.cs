@@ -101,5 +101,23 @@ namespace ExpediaTest
 
             mocks.VerifyAll();
         }
+        [TestMethod()]
+        public void TestObjectMother()
+        {
+            IDatabase mockDatabase = mocks.StrictMock<IDatabase>();
+            Int32 miles = 1234567;
+
+            Expect.Call(mockDatabase.Miles).PropertyBehavior();
+
+            mocks.ReplayAll();
+            mockDatabase.Miles = miles;
+            var target = ObjectMother.BMW();
+            target.Database = mockDatabase;
+
+            Int32 mileage = target.Mileage;
+            Assert.AreEqual(mileage, miles);
+
+            mocks.VerifyAll();
+        }
 	}
 }
