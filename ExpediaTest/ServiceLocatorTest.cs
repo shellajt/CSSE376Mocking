@@ -2,6 +2,7 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Expedia;
+using System.Reflection;
 
 namespace ExpediaTest
 {
@@ -58,5 +59,21 @@ namespace ExpediaTest
 			Assert.AreSame(secondCar, locator.AvailableCars[1]);
 			Assert.AreEqual(2, locator.AvailableCars.Count);
 		}
+        [TestMethod()]
+        public void TestThatUserDoesRemoveCarFromServiceLocatorWhenBooked()
+        {
+            ServiceLocator serviceLocator = new ServiceLocator();
+            var carToBook = new Car(5);
+            var remainingCar = new Car(7);
+            serviceLocator.AddCar(carToBook);
+            serviceLocator.AddCar(remainingCar);
+
+            typeof(ServiceLocator).GetField("_instance", BindingFlags.Static | BindingFlags.NonPublic).SetValue(serviceLocator, serviceLocator);
+
+            var target = new User("Bob");
+            target.book(carToBook);
+            Assert.AreEqual(1, ServiceLocator.Instance.AvailableCars.Count);
+            Assert.AreSame(remainingCar, ServiceLocator.Instance.AvailableCars[0]);
+        }
 	}
 }
