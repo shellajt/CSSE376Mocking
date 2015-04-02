@@ -104,6 +104,9 @@ namespace ExpediaTest
         [TestMethod()]
         public void TestObjectMother()
         {
+            var target = ObjectMother.BMW();
+            Assert.AreEqual("Generic BMW Car", target.Name);
+
             IDatabase mockDatabase = mocks.StrictMock<IDatabase>();
             Int32 miles = 1234567;
 
@@ -111,7 +114,7 @@ namespace ExpediaTest
 
             mocks.ReplayAll();
             mockDatabase.Miles = miles;
-            var target = ObjectMother.BMW();
+   
             target.Database = mockDatabase;
 
             Int32 mileage = target.Mileage;
