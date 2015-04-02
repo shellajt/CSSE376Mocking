@@ -58,9 +58,11 @@ namespace ExpediaTest
 
             String carLocation10 = "Location10";
             String carLocation11 = "Location11";
+            String noSuchCarLocaiton = "No car with that ID";
 
             Expect.Call(mockDB.getCarLocation(10)).Return(carLocation10);
             Expect.Call(mockDB.getCarLocation(11)).Return(carLocation11);
+            Expect.Call(mockDB.getCarLocation(1241)).Return(noSuchCarLocaiton);
 
             mocks.ReplayAll();
             Car target = new Car(10);
@@ -75,7 +77,29 @@ namespace ExpediaTest
             result = target.getCarLocation(11);
             Assert.AreEqual(carLocation11, result);
 
-            mocks.VerifyAll();
+            result = target.getCarLocation(1241);
+            Assert.AreEqual(noSuchCarLocaiton, result);
+
+            mocks.VerifyAll();
+        }
+
+        [TestMethod()]
+        public void TestMilageProperty()
+        {
+            IDatabase mockDatabase = mocks.StrictMock<IDatabase>();
+            Int32 miles = 1234567;
+
+            Expect.Call(mockDatabase.Miles).PropertyBehavior();
+
+            mocks.ReplayAll();
+            mockDatabase.Miles = miles;
+            var target = new Car(10);
+            target.Database = mockDatabase;
+
+            Int32 mileage = target.Mileage;
+            Assert.AreEqual(mileage, miles);
+
+            mocks.VerifyAll();
         }
 	}
 }
