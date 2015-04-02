@@ -59,6 +59,7 @@ namespace ExpediaTest
 			Assert.AreSame(secondCar, locator.AvailableCars[1]);
 			Assert.AreEqual(2, locator.AvailableCars.Count);
 		}
+
         [TestMethod()]
         public void TestThatUserDoesRemoveCarFromServiceLocatorWhenBooked()
         {

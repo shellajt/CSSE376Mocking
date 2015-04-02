@@ -84,6 +84,30 @@ namespace ExpediaTest
 			target.book(car);
 			Assert.AreEqual(flight.getBasePrice() + car.getBasePrice(), target.Price);
 		}
+
+        [TestMethod]
+        public void TestThatServiceLocatorRemovesFlightWhenBooked() 
+        {
+
+            DateTime StartDate = new DateTime(2009, 11, 1);
+		    DateTime EndDate = new DateTime(2009, 11, 30);
+
+            ServiceLocator serviceLocator = new ServiceLocator();
+
+            var flightToBook = new Flight(StartDate, EndDate, 1500);
+            var remainingFlight = new Flight(new DateTime(2009, 10, 1), new DateTime(2009,10,14), 1200);
+
+            serviceLocator.AddFlight(flightToBook);
+            serviceLocator.AddFlight(remainingFlight);
+
+            //Apply Magic
+            typeof(ServiceLocator).GetField("_instance", BindingFlags.Static | BindingFlags.NonPublic).SetValue(serviceLocator, serviceLocator);
+
+            var target = new User("Bob");
+            target.book(flightToBook);
+            Assert.AreEqual(1, ServiceLocator.Instance.AvailableFlights.Count);
+            Assert.AreSame(remainingFlight, ServiceLocator.Instance.AvailableFlights[0]);
+        }
 		
 		[TestCleanup]
 		public void TearDown()
